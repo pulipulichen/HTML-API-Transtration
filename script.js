@@ -19,6 +19,7 @@ function filterText(text) {
   else {
     return false
   }
+  return text
 }
 
 function hasCachedText(text, lang) {
