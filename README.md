@@ -1,15 +1,22 @@
 # HTML-API-Transtration
 
+````html
+<script src="https://pulipulichen.github.io/puli-post-message-api/puli-post-message-api.min.js"></script>
+<script>
+(async function () {
+  let api = PuliPostMessageAPI()
 
-https://pulipulichen.github.io/puli-post-message-api/puli-post-message-api.min.js
-
+  let url = 'https://pulipulichen.github.io/HTML-API-Transtration/index.html'
+  let data = {
+    text: '待翻譯的文字',
+    lang: 'en'
+  }
+  let result = await api.send(url, data)
+})()
+</script>
 ````
-let api = PuliPostMessageAPI()
 
-let url = 'index.html'
-let data = {
-  text: '待翻譯的文字',
-  lang: 'en'
-}
-let result = await api.send(url, data)
-````
+# Minify
+
+https://www.toptal.com/developers/javascript-minifier/
+
