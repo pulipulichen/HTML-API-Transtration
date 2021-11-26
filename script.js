@@ -9,7 +9,7 @@ let originalSource
 let SourceContainer = document.querySelector('#SourceContainer')
 let isFirstTranslate = true
 
-function setSource(text) {
+function filterText(text) {
   if (typeof(text) === 'string') {
     text = [text.trim()]
   }
@@ -19,7 +19,26 @@ function setSource(text) {
   else {
     return false
   }
-  
+}
+
+function hasCachedText(text, lang) {
+  let cachedTextList = []
+  for (let i = 0; i < text.length; i++) {
+    let key = `trans[${lang}]:` + text[i]
+    let value = localStorage.getItem(key)
+    
+    if (typeof(value) === 'string'
+            && value !== '') {
+      cachedTextList.push(value)
+    }
+    else {
+      return false
+    }
+  }
+  return cachedTextList
+}
+
+function setSource(text) {
   
   if (hasTranslated()) {
     document.body.innerHTML = `<div id="SourceContainer"></div>
@@ -81,11 +100,24 @@ async function googleTranslateElementInit() {
       }
       hasCalled = true
       let result = await callbackToOpener()
+      
+      saveToLocalStorage(result)
+      
       //console.log(result)
       resolve(result)
     }, false);
   })
   
+}
+
+function saveToLocalStorage (result) {
+  // originalSource
+  for (let i = 0; i < result.length; i++) {
+    let key = `trans[${currentTarget}]:` + originalSource[i]
+    let value = result[i]
+    
+    localStorage.setItem(key, value)
+  }
 }
 
 function sleep (ms = 500) {

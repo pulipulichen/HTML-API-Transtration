@@ -20,3 +20,6 @@
 
 https://www.toptal.com/developers/javascript-minifier/
 
+# TODO
+
+- HTML Cache
