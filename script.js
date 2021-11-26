@@ -3,6 +3,14 @@ function ok() {
   isOK = true
 }
 
+let originalSource
+let source = document.querySelector('#source')
+
+function setSource(text) {
+  source.innerText = text.trim()
+  originalSource = text.trim()
+}
+
 function setGoogleTransCookie(target) {
   //if (document.cookie === '') {
   document.cookie = 'googtrans=/auto/' + target;
@@ -10,7 +18,7 @@ function setGoogleTransCookie(target) {
 }
 
 function googleTranslateElementInit() {
-  console.log(isOK)
+  //console.log(isOK)
   if (isOK === false) {
     setTimeout(() => {
       googleTranslateElementInit()
@@ -25,52 +33,38 @@ function googleTranslateElementInit() {
     autodisplay: false,
     //autodisplay: true,
     layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT
-  }, 'google_translate_element');
-  document.getElementById("source").addEventListener("DOMSubtreeModified", callbackToOpener, false);
-}
-function callbackToOpener() {
-  setTimeout(function () {
-    let output = $('#source').text()
-    // let originalSource = $('#originalSource').val()
-
-    if ($('.goog-te-combo').length === 0) {
-      callbackToOpener()
-      return true
-    }
-
-    let originalSource = $('#originalSource').val()
-    if (output === originalSource) {
-      callbackToOpener()
-      return true
-    }
-
-    console.log(output)
-    return false
-
-    let note = window.top.$(window.top.document.body).find('.wait-trans')
-    note.val(output)
-    note.trigger("autosize.resize")
-    setTimeout(() => {
-      //note.focus()
-      note.removeClass('wait-trans')
-      note.removeClass('loading')
-
-      /*
-       let offset = note.offset()
-       if (offset !== undefined) {
-       let top = offset.top
-       //console.log(top)
-       //window.top.document.body.scrollTo(0, top)
-       }
-       */
-      //window.close()
-      location.reload()
-    }, 0)
-
-  }, 500)
+  }, 'google_translate_element')
+  
+  return new Promise((resolve) => {
+    document.getElementById("source").addEventListener("DOMSubtreeModified", () => {
+      let result = callbackToOpener()
+      resolve(result)
+    }, false);
+  })
+  
 }
 
+function sleep (ms = 500) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function callbackToOpener() {
+  while (document.querySelectorAll('.goog-te-combo').length === 0) {
+    await sleep(100)
+  }
+  
+  let output = source.innerText.trim()
+  while (output === originalSource) {
+    await sleep(100)
+    output = source.innerText.trim()
+  }
+  
+  return output
+}
+
+/*
 setTimeout(() => {
   setGoogleTransCookie('en')
   googleTranslateElementInit()
 }, 1000)
+*/
