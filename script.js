@@ -116,9 +116,47 @@ function saveToLocalStorage (result) {
     let key = `trans[${currentTarget}]:` + originalSource[i]
     let value = result[i]
     
-    localStorage.setItem(key, value)
+    
+    try {
+      localStorage.setItem(key, value)
+    }
+    catch (e) {
+      console.error(e)
+      removeOldestItem()
+      return saveToLocalStorage(result)
+    }
   }
 }
+
+function removeOldestItem () {
+  for (let i = 0; i < 100; i++) {
+    let key = localStorage.key(0)
+    if (!key) {
+      return true
+    }
+    
+    localStorage.removeItem(localStorage.key(0))
+  }
+  
+  return true
+}
+
+function localStorageUsageSpace() {
+    var data = '';
+
+    //console.log('Current local storage: ');
+
+    for(var key in window.localStorage){
+        if(window.localStorage.hasOwnProperty(key)){
+            data += window.localStorage[key];
+            //console.log( key + " = " + ((window.localStorage[key].length * 16)/(8 * 1024)).toFixed(2) + ' KB' );
+        }
+    }
+
+    return ((data.length * 16)/(8 * 1024)).toFixed(2)
+    //console.log(data ? '\n' + 'Total space used: ' + ((data.length * 16)/(8 * 1024)).toFixed(2) + ' KB' : 'Empty (0 KB)');
+    //console.log(data ? 'Approx. space remaining: ' +  + ' KB' : '5 MB');
+};
 
 function sleep (ms = 500) {
   return new Promise(resolve => setTimeout(resolve, ms));
