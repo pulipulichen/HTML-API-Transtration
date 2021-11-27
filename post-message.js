@@ -2,6 +2,8 @@ let api = PuliPostMessageAPI()
 
 api.addReceiveListener(async function ({text, lang}) {
   //console.log('收到')
+  
+  let isArray = Array.isArray(text)
   let filteredText = filterText(text)
   if (filteredText === false) {
     return text
@@ -16,7 +18,6 @@ api.addReceiveListener(async function ({text, lang}) {
   
   setSource(text)
   setGoogleTransCookie(lang)
-  let isArray = Array.isArray(text)
   
   let result = await googleTranslateElementInit()
   if (!isArray) {
