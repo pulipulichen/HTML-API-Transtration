@@ -9,17 +9,19 @@ api.addReceiveListener(async function ({text, lang}) {
     return text
   }
   
-  let cahcedText = hasCachedText(text, lang)
-  if (cahcedText !== false) {
-    return cahcedText
-  }
+  let cachedText = hasCachedText(text, lang)
   
+  if (cachedText !== false) {
+    return cachedText
+  }
+  //console.log(filteredText)
   text = filteredText
   
   setSource(text)
   setGoogleTransCookie(lang)
   
   let result = await googleTranslateElementInit()
+  //console.log(result)
   if (!isArray) {
     result = result[0]
   }
