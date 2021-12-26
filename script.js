@@ -91,8 +91,9 @@ async function googleTranslateElementInit() {
 //    setTimeout(() => {
 //      console.log(document.getElementById("source"))
 //    }, 1000)
-    let firstSpan = SourceContainer.firstChild
-    //console.log(firstSpan)
+    /*
+    let firstSpan = SourceContainer.lastChild
+    console.log(firstSpan)
     
     let hasCalled = false
     firstSpan.addEventListener("DOMSubtreeModified", async () => {
@@ -107,6 +108,46 @@ async function googleTranslateElementInit() {
       //console.log(result)
       resolve(result)
     }, false);
+    */
+    let collection = SourceContainer.children;
+    let hasCalled = false
+    for (let i = 0; i < collection.length; i++) {
+      let span = collection[i]
+      span.setAttribute('data-index', i)
+      //console.log(span)
+    }
+    
+    let loop = async function () {
+      let span = document.querySelector('span[data-index]')
+      //console.log(span)
+      if (span) {
+        //span.scrollIntoView({block: 'center'})
+        window.scroll({
+          top: span.offsetTop
+        })
+        //console.log(span, 'scroll', span.offsetTop)
+        
+        span.removeAttribute('data-index')
+        
+        setTimeout(() => {
+          loop()
+        }, 500)
+      }
+      else {
+        if (hasCalled === true) {
+          return false
+        }
+        hasCalled = true
+        let result = await callbackToOpener()
+
+        saveToLocalStorage(result)
+
+        //console.log(result)
+        resolve(result)
+
+      }
+    }
+    loop()
   })
   
 }
@@ -187,7 +228,11 @@ async function callbackToOpener() {
   
   let output = []
   document.querySelectorAll('#SourceContainer span').forEach(span => {
-    output.push(span.innerText.trim())
+    let trans = span.innerText.trim()
+    if (trans.startsWith('"') && trans.endsWith('"')) {
+      trans = trans.slice(1, -1)
+    }
+    output.push(trans)
   })
   
   isFirstTranslate = false
