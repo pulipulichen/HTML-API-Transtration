@@ -39,6 +39,10 @@ function hasCachedText(text, lang) {
   return cachedTextList
 }
 
+function removeControlCharacter(str) {
+  return str.replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+}
+
 function setSource(text) {
   
   if (hasTranslated()) {
@@ -49,7 +53,7 @@ function setSource(text) {
 
   text.forEach(t => {
     let span = document.createElement("span")
-    span.innerText = t
+    span.innerText = removeControlCharacter(t)
     SourceContainer.appendChild(span)
   })
   
