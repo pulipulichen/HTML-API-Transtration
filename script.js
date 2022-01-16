@@ -52,7 +52,7 @@ function setSource(text) {
   }
 
   text.forEach(t => {
-    let span = document.createElement("span")
+    let span = document.createElement("div")
     span.innerText = removeControlCharacter(t)
     SourceContainer.appendChild(span)
   })
@@ -122,7 +122,7 @@ async function googleTranslateElementInit() {
     }
     
     let loop = async function () {
-      let span = document.querySelector('span[data-index]')
+      let span = document.querySelector('div[data-index]')
       //console.log(span)
       if (span) {
         //span.scrollIntoView({block: 'center'})
@@ -231,7 +231,7 @@ async function callbackToOpener() {
   }
   
   let output = []
-  document.querySelectorAll('#SourceContainer span').forEach(span => {
+  document.querySelectorAll('#SourceContainer div').forEach(span => {
     let trans = span.innerText.trim()
     if (trans.startsWith('"') && trans.endsWith('"')) {
       trans = trans.slice(1, -1)
