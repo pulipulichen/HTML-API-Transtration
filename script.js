@@ -64,13 +64,24 @@ function setSource(text) {
 let currentTarget
 
 function setGoogleTransCookie(target) {
+  console.log(target, currentTarget)
   if (currentTarget !== target) {
     //if (document.cookie === '') {
     document.cookie = 'googtrans=/auto/' + target
     //console.log(document.cookie)
     //}
     currentTarget = target
+
+    setTimeout(() => {
+      let selector = document.querySelector(".goog-te-combo")
+      if (selector && selector.value !== target) {
+        selector.value = target
+        selector.dispatchEvent(new Event("change"));
+      }
+    }, 3000)
   }
+
+
 }
 
 async function googleTranslateElementInit() {
@@ -202,7 +213,7 @@ function localStorageUsageSpace() {
     return ((data.length * 16)/(8 * 1024)).toFixed(2)
     //console.log(data ? '\n' + 'Total space used: ' + ((data.length * 16)/(8 * 1024)).toFixed(2) + ' KB' : 'Empty (0 KB)');
     //console.log(data ? 'Approx. space remaining: ' +  + ' KB' : '5 MB');
-};
+}
 
 function sleep (ms = 500) {
   return new Promise(resolve => setTimeout(resolve, ms));

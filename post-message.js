@@ -1,7 +1,7 @@
 let api = PuliPostMessageAPI()
 
 api.addReceiveListener(async function ({text, lang}) {
-  //console.log('收到', text)
+  //console.log('收到222', text)
   
   let isArray = Array.isArray(text)
   let filteredText = filterText(text)
