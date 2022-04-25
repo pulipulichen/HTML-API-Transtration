@@ -64,7 +64,7 @@ function setSource(text) {
 let currentTarget
 
 function setGoogleTransCookie(target) {
-  console.log(target, currentTarget)
+  //console.log(target, currentTarget)
   if (currentTarget !== target) {
     //if (document.cookie === '') {
     document.cookie = 'googtrans=/auto/' + target
