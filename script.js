@@ -8,6 +8,7 @@ function ok() {
 let originalSource
 let SourceContainer = document.querySelector('#SourceContainer')
 let isFirstTranslate = true
+let pageSourceLang = 'zh-TW'
 
 function filterText(text) {
   if (typeof(text) === 'string') {
@@ -28,8 +29,7 @@ function hasCachedText(text, lang) {
     let key = `trans[${lang}]:` + text[i]
     let value = localStorage.getItem(key)
     
-    if (typeof(value) === 'string'
-            && value !== '') {
+    if (typeof(value) === 'string' && value !== '') {
       cachedTextList.push(value)
     }
     else {
@@ -43,6 +43,9 @@ function removeControlCharacter(str) {
   return str.replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
 }
 
+var traditionalChinesePattern = /[\u4E00-\u9FFF]/; // This regex matches any character in the range of Traditional Chinese Unicode characters
+
+
 function setSource(text) {
   
   if (hasTranslated()) {
@@ -50,7 +53,7 @@ function setSource(text) {
   <div id="google_translate_element"></div>`
     SourceContainer = document.querySelector('#SourceContainer')
   }
-
+  
   text.forEach(t => {
     let span = document.createElement("div")
     span.innerText = removeControlCharacter(t)
@@ -63,7 +66,7 @@ function setSource(text) {
 
 let currentTarget
 
-function setGoogleTransCookie(target) {
+async function setGoogleTransCookie(target) {
   //console.log(target, currentTarget)
   if (currentTarget !== target) {
     //if (document.cookie === '') {
@@ -72,16 +75,35 @@ function setGoogleTransCookie(target) {
     //}
     currentTarget = target
 
-    setTimeout(() => {
+    // await sleep(100)
+    while(!document.querySelector(".goog-te-combo")) {
+      await sleep(100)
+    }
+    // console.log('有')
+
+    setTimeout(async () => {
       let selector = document.querySelector(".goog-te-combo")
+      // console.log({s: selector, a: selector.value, t: target})
+      // if (selector && (selector.value === target || selector.value === '')) {
+      //   selector.value = 'af'
+      //   sameLanguageTarget = true
+      //   selector.dispatchEvent(new Event("change"))
+      //   console.log({s: selector, a: selector.value, t: target})
+      //   // console.log({a: selector.value, t: target})
+      //   await sleep(3000)
+      // }
+
       if (selector && selector.value !== target) {
         selector.value = target
-        selector.dispatchEvent(new Event("change"));
+        // console.log(selector)
+        // sameLanguageTarget = false
+        selector.dispatchEvent(new Event("change"))
+        // console.log({s: selector, a: selector.value, t: target})
+        // console.log({a: selector.value, t: target})
+        // await sleep(3000)
       }
-    }, 3000)
+    }, 100)
   }
-
-
 }
 
 async function googleTranslateElementInit() {
@@ -89,14 +111,14 @@ async function googleTranslateElementInit() {
   while (isOK === false) {
     await sleep(1000)
   }
-  //console.log(isOK)
+  // console.log(isOK)
 
   
   //setGoogleTransCookie()
 
   new google.translate.TranslateElement({
-    //pageLanguage: 'zh_TW',
-    autodisplay: false,
+    pageLanguage: 'zh-TW',
+    autodisplay: true,
     //autodisplay: true,
     layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT
   }, 'google_translate_element')
